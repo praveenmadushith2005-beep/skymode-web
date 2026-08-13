@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skymode VPN | Premium Secure Internet & V2Ray Solutions</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Inline Theme Check for immediate load without flashing -->
+    <script>
+        if (localStorage.getItem('skymode_theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
+    </script>
+
+    <!-- Background Animated Glow Orbs -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastNotification" class="toast-notification"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="vpn_logotrans.png" alt="Skymode Logo" onerror="this.style.display='none'">
+                <span>Skymode</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="details.html">Details</a></li>
+                <li><a href="contact.html">Contact & Support</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#" id="openToolsBtn" class="nav-tools-link">Tools</a></li>
+            </ul>
+            <div class="nav-actions">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" class="theme-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <a href="#pricing" class="btn-glow hide-mobile">Get Skymode</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-container">
+            <div class="hero-content reveal">
+                <div class="badge floating"><i class="fa-solid fa-rocket" style="color: #3b82f6;"></i> The #1 VPN for Sri Lanka</div>
+                <h1>Unlock the True Internet with <span class="text-gradient">Skymode</span></h1>
+                <p>Bypass ISP restrictions effortlessly, secure your personal data with military-grade V2Ray encryption, and enjoy blazing-fast speeds across all your devices.</p>
+                <div class="hero-btns">
+                    <a href="#pricing" class="btn-primary">Start Your Journey <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="#features" class="btn-secondary"><i class="fa-solid fa-play"></i> Explore Features</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat"><i class="fa-solid fa-shield-check"></i> No-Logs Policy</div>
+                    <div class="stat"><i class="fa-solid fa-bolt"></i> 10Gbps Servers</div>
+                    <div class="stat"><i class="fa-solid fa-globe"></i> 99.9% Uptime</div>
+                </div>
+            </div>
+            
+            <!-- Creatively Animated Image/Telemetry Container -->
+            <div class="hero-image reveal">
+                <div class="glass-card mockup-card holo-container">
+                    <div class="mockup-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <span class="holo-tag">SECURE TUNNEL ACTIVE</span>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="radar-scanner">
+                            <div class="radar-beam"></div>
+                            <i class="fa-solid fa-shield-halved pulse-icon text-gradient"></i>
+                        </div>
+                        <h3>Connected Securely</h3>
+                        <p id="heroServerCountry">Singapore Nodes</p>
+                        
+                        <!-- Telemetry Display Box with Real Country, Real IP & Device IP -->
+                        <div class="telemetry-box">
+                            <div class="telemetry-item">
+                                <span>Country:</span> <strong id="heroCountryDisplay">Detecting...</strong>
+                            </div>
+                            <div class="telemetry-item">
+                                <span>IP:</span> <strong id="heroIpDisplay">Detecting...</strong>
+                            </div>
+                            <div class="telemetry-item">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="partners reveal">
+        <div class="container">
+            <p class="section-subtitle text-center">POWERED BY WORLD-CLASS INFRASTRUCTURE</p>
+            <div class="partner-logos">
+                <div class="partner"><i class="fa-brands fa-digital-ocean"></i> DigitalOcean</div>
+                <div class="partner"><i class="fa-brands fa-aws"></i> Amazon Web Services</div>
+                <div class="partner"><i class="fa-brands fa-linux"></i> Linode</div>
+                <div class="partner"><i class="fa-brands fa-cloudflare"></i> Cloudflare</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Why Choose <span class="text-gradient">Skymode?</span></h2>
+                <p>We built Skymode from the ground up to provide unparalleled security without compromising speed or reliability.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card glass-card reveal hover-lift">
+                    <div class="icon-box"><i class="fa-solid fa-user-secret"></i></div>
+                    <h3>Strict No-Logs Policy</h3>
+                    <p>We never track, store, or share your browsing history. Your online activity stays strictly private.</p>
+                </div>
+                <div class="feature-card glass-card reveal hover-lift">
+                    <div class="icon-box"><i class="fa-solid fa-rocket"></i></div>
+                    <h3>V2Ray Protocols</h3>
+                    <p>Advanced V2Ray backend ensures you bypass the strictest ISP firewalls and DPI seamlessly.</p>
+                </div>
+                <div class="feature-card glass-card reveal hover-lift">
+                    <div class="icon-box"><i class="fa-solid fa-gamepad"></i></div>
+                    <h3>Gaming Optimized</h3>
+                    <p>Specially tuned routing for popular mobile and PC games to ensure minimal ping and zero packet loss.</p>
+                </div>
+                <div class="feature-card glass-card reveal hover-lift">
+                    <div class="icon-box"><i class="fa-solid fa-lock"></i></div>
+                    <h3>256-Bit Encryption</h3>
+                    <p>Your connection is fortified with AES-256 encryption, the global gold standard for cybersecurity.</p>
+                </div>
+                <div class="feature-card glass-card reveal hover-lift">
+                    <div class="icon-box"><i class="fa-solid fa-infinity"></i></div>
+                    <h3>Unlimited Bandwidth</h3>
+                    <p>Experience the web without borders. No speed caps, no throttling, just pure unlimited freedom.</p>
+                </div>
+                <div class="feature-card glass-card reveal hover-lift">
+                    <div class="icon-box"><i class="fa-solid fa-headset"></i></div>
+                    <h3>24/7 Premium Support</h3>
+                    <p>Our dedicated support squad is always online via WhatsApp and Telegram to assist you instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Servers Section -->
+    <section class="global-servers" id="servers">
+        <div class="container">
+            <div class="server-wrapper glass-card reveal">
+                <div class="server-text">
+                    <h2>Ultra-Fast <span class="text-gradient">Global Network</span></h2>
+                    <p>Connect to high-speed 10Gbps servers strategically located to give you the lowest latency in Sri Lanka.</p>
+                    <ul class="server-list">
+                        <li><img src="https://flagcdn.com/w20/sg.png" alt="SG"> Singapore (Recommended)</li>
+                        <li><img src="https://flagcdn.com/w20/jp.png" alt="JP"> Japan (Ultra-Low Ping)</li>
+                        <li><img src="https://flagcdn.com/w20/us.png" alt="US"> United States</li>
+                        <li><img src="https://flagcdn.com/w20/gb.png" alt="UK"> United Kingdom</li>
+                    </ul>
+                </div>
+                <div class="server-map">
+                    <i class="fa-solid fa-earth-asia pulse-icon text-gradient" style="font-size: 140px;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Get Started in <span class="text-gradient">3 Simple Steps</span></h2>
+            </div>
+            <div class="steps-container">
+                <div class="step reveal">
+                    <div class="step-number pulse-border">1</div>
+                    <h3>Choose a Plan</h3>
+                    <p>Select a package that fits your data needs and budget from our store.</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step reveal" style="transition-delay: 0.2s;">
+                    <div class="step-number pulse-border">2</div>
+                    <h3>Setup the App</h3>
+                    <p>Download Netmod, v2rayNG, or your preferred client and import your config link.</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step reveal" style="transition-delay: 0.4s;">
+                    <div class="step-number pulse-border">3</div>
+                    <h3>Connect & Browse</h3>
+                    <p>Hit connect and enjoy a secure, unrestricted internet experience instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Simple, Transparent <span class="text-gradient">Pricing</span></h2>
+                <p>Choose the perfect VPN plan. No hidden fees, ever.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Starter -->
+                <div class="pricing-card glass-card reveal hover-lift">
+                    <div>
+                        <h4>Starter</h4>
+                        <div class="price">Rs.250<span>/mo</span></div>
+                        <p class="plan-desc">Perfect for light browsing</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> <b>50GB</b>Premium Bandwidth</li>
+                            <li><i class="fa-solid fa-check"></i> 1 Device Access</li>
+                            <li><i class="fa-solid fa-check"></i> V2Ray/VMess Support</li>
+                            <li><i class="fa-solid fa-check"></i> 24/7 Support</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> No Torrent Download</li>
+                        </ul>
+                    </div>
+                    <a href="checkout.html?plan=Starter&price=250&duration=30%20Days&gb=50GB%20Bandwidth&isp=Singapore%20Premium%20V2Ray" class="btn-secondary w-100" style="display: block; text-align: center; text-decoration: none;">Select Plan</a>
+                </div>
+
+                <!-- Standard (Popular) -->
+                <div class="pricing-card glass-card reveal hover-lift">
+                    <div>
+                        <h4>Basic</h4>
+                        <div class="price">Rs.350<span>/mo</span></div>
+                        <p class="plan-desc">Best for daily streamers</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> <b>120GB</b>Premium Bandwidth</li>
+                            <li><i class="fa-solid fa-check"></i> 2 Device Access</li>
+                            <li><i class="fa-solid fa-check"></i> V2Ray/VMess/VLESS Support</li>
+                            <li><i class="fa-solid fa-check"></i> High Priority Support</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> No Torrent Download</li>
+                        </ul>
+                    </div>
+                    <a href="checkout.html?plan=Basic&price=350&duration=30%20Days&gb=120GB%20Bandwidth&isp=Singapore%20Premium%20V2Ray" class="btn-secondary w-100" style="display: block; text-align: center; text-decoration: none;">Select Plan</a>
+                </div>
+
+                <!-- Pro -->
+               <div class="pricing-card glass-card popular reveal hover-lift" style="transition-delay: 0.2s;">
+                    <div class="popular-tag">Most Popular</div>
+                    <div>
+                        <h4>Standard</h4>
+                        <div class="price">Rs.500<span>/mo</span></div>
+                        <p class="plan-desc">For heavy power users</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> <b>250GB</b>Premium Bandwidth</li>
+                            <li><i class="fa-solid fa-check"></i> 3 Device Access</li>
+                            <li><i class="fa-solid fa-check"></i> All Protocols Support</li>
+                            <li><i class="fa-solid fa-check"></i> Enhanced Encryption</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> No Torrent Download</li>
+                        </ul>
+                    </div>
+                   <a href="checkout.html?plan=Standard&price=500&duration=30%20Days&gb=250GB%20Bandwidth&isp=Singapore%20Premium%20V2Ray" class="btn-primary w-100" style="display: block; text-align: center; text-decoration: none;">Select Plan</a>
+                </div>
+
+                <!-- Elite (New) -->
+                <div class="pricing-card glass-card reveal hover-lift">
+                    <div>
+                        <h4>Advanced</h4>
+                        <div class="price">Rs.600<span>/mo</span></div>
+                        <p class="plan-desc">For hardcore gamers & streamers</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> <b>350GB</b>Premium Bandwidth</li>
+                            <li><i class="fa-solid fa-check"></i> 4 Device Access</li>
+                            <li><i class="fa-solid fa-check"></i> All Protocols Support</li>
+                            <li><i class="fa-solid fa-check"></i> VIP Routing (Low Ping)</li>
+                           <li class="disabled"><i class="fa-solid fa-xmark"></i> No Torrent Download</li>
+                        </ul>
+                    </div>
+                    <a href="checkout.html?plan=Advanced&price=600&duration=30%20Days&gb=350GB%20Bandwidth&isp=VIP%20Routing%20V2Ray" class="btn-secondary w-100" style="display: block; text-align: center; text-decoration: none;">Select Plan</a>
+                </div>
+
+                <!-- Ultimate (New) -->
+                <div class="pricing-card glass-card popular reveal hover-lift" style="transition-delay: 0.2s;">
+                    <div class="popular-tag">Most Valubal</div>
+                    <div>
+                        <h4>Pro</h4>
+                        <div class="price">Rs.700<span>/mo</span></div>
+                        <p class="plan-desc">Get the better internet freedom</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> <b>500GB</b>Premium Bandwidth</li>
+                            <li><i class="fa-solid fa-check"></i> 5 Device Access</li>
+                            <li><i class="fa-solid fa-check"></i> All Protocols Support</li>
+                            <li><i class="fa-solid fa-check"></i> Highest Priority Support</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> No Torrent Download</li>
+                        </ul>
+                    </div>
+                    <a href="checkout.html?plan=Pro&price=700&duration=30%20Days&gb=500GB%20Bandwidth&isp=VIP%20Priority%20V2Ray" class="btn-primary w-100" style="display: block; text-align: center; text-decoration: none;">Select Plan</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="reviews">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>What Our <span class="text-gradient">Users Say</span></h2>
+            </div>
+            <div class="testi-grid">
+                <div class="testi-card glass-card reveal">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p>"Best VPN service in Sri Lanka! The packages work smoothly and speeds never drop during peak hours. Highly recommend!"</p>
+                    <h4>K.S.Tharindu</h4>
+                </div>
+                <div class="testi-card glass-card reveal" style="transition-delay: 0.2s;">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p>"Customer service is top-notch. Whenever I need to renew or have a question, the admin replies within minutes on WhatsApp."</p>
+                    <h4>Seneth Pathirana</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Frequently Asked <span class="text-gradient">Questions</span></h2>
+            </div>
+            <div class="faq-container reveal">
+                <div class="faq-item glass-card">
+                    <div class="faq-question">
+                        <h3>Does this work with my Dialog/Mobitel packages?</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, Skymode VPN is highly optimized and configured with custom SNI bug hosts to work seamlessly with specific educational and work data packages provided by local ISPs.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <div class="faq-question">
+                        <h3>Which apps do I need to use this VPN?</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can use any V2Ray-supported client. We highly recommend 'Netmod' for Windows PC and 'v2rayNG' for Android mobile devices.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <div class="faq-question">
+                        <h3>What happens when my data limit is reached?</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Your connection will be paused. You can simply contact our admins via WhatsApp or Telegram to renew or upgrade your package instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="#" class="logo">
+                        <img src="vpn_logotrans.png" alt="Skymode Logo" onerror="this.style.display='none'">
+                        <span>Skymode</span>
+                    </a>
+                    <p>Elevating your digital freedom. Secure, fast, and built for modern internet needs.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-telegram"></i></a>
+                        <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="#">V2Ray Servers</a></li>
+                        <li><a href="#">Gaming VPN</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Setup Guide</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="contact.html">Contact Admin</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h4>Subscribe to Updates</h4>
+                    <p>Get notified about new servers and bug hosts.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Skymode VPN. Created for ultimate privacy.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toolsModal" class="tools-modal-overlay">
+      <div class="tools-modal-content glass-card">
+        <div class="tools-header">
+          <h3>Network Tools</h3>
+          <button id="closeToolsBtn" class="close-btn">&times;</button>
+        </div>
+        
+        <div class="tools-grid">
+          <!-- IP Address Card -->
+          <div class="tool-card ip-card glass-card">
+            <div class="tool-icon-glow"><i class="fa-solid fa-globe"></i></div>
+            <div class="tool-info">
+              <h4>Your IP Address</h4>
+              <p id="ipDisplay" class="tool-result">Fetching...</p>
+              <span class="ip-subtext">Live Network Check</span>
+            </div>
+          </div>
+
+          <!-- Speed Test Card -->
+          <div class="tool-card speed-card glass-card">
+            <h4>Internet Speed</h4>
+            
+            <div class="speedometer-container">
+              <svg class="speed-ring" viewBox="0 0 120 120">
+                <defs>
+                  <linearGradient id="speedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#3b82f6" />
+                    <stop offset="100%" stop-color="#8b5cf6" />
+                  </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                <circle class="ring-fill" id="speedRingFill" cx="60" cy="60" r="50"></circle>
+              </svg>
+              <div class="speed-gauge-center">
+                <i class="fa-solid fa-bolt speed-bolt"></i>
+                <p id="speedDisplay" class="tool-result">Ready</p>
+                <span class="speed-unit">Mbps</span>
+              </div>
+            </div>
+
+            <button id="runSpeedTest" class="speed-btn btn-primary"><i class="fa-solid fa-gauge-high"></i> Test Speed</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

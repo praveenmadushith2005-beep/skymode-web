@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Inspector | Skymode VPN</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External Base Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Smooth UI Transitions (Values update instantly via JS without lag) */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body.inspector-body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow-x: hidden;
+            font-family: 'Outfit', sans-serif;
+            background: #060913;
+            color: #f3f4f6;
+            margin: 0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Theme Styles */
+        body.inspector-body.light-theme {
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        body.inspector-body.light-theme .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        body.inspector-body.light-theme .glass-card:hover {
+            transform: scale(1.03);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12), 0 0 35px rgba(59, 130, 246, 0.15);
+        }
+
+        body.inspector-body.light-theme .input-glass-wrapper {
+            background: rgba(241, 245, 249, 0.9);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.inspector-body.light-theme .input-glass-wrapper input {
+            color: #0f172a;
+        }
+
+        body.inspector-body.light-theme .input-glass-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        body.inspector-body.light-theme .server-stats-grid,
+        body.inspector-body.light-theme .countdown-box {
+            background: rgba(241, 245, 249, 0.95);
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        body.inspector-body.light-theme .detail-row {
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+
+        body.inspector-body.light-theme .detail-row span:last-child {
+            color: #0f172a;
+        }
+
+        body.inspector-body.light-theme .dash-card h3,
+        body.inspector-body.light-theme .inspector-header p,
+        body.inspector-body.light-theme .metric-sub,
+        body.inspector-body.light-theme .usage-labels,
+        body.inspector-body.light-theme .stat-item span:first-child,
+        body.inspector-body.light-theme .countdown-title,
+        body.inspector-body.light-theme .count-label {
+            color: #64748b;
+        }
+
+        body.inspector-body.light-theme .metric-value {
+            color: #0f172a;
+        }
+
+        body.inspector-body.light-theme .btn-secondary-custom {
+            background: rgba(0, 0, 0, 0.04);
+            color: #0f172a;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.inspector-body.light-theme .btn-secondary-custom:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Highly Noticeable Logo-Matched Background Animated Blobs / Glows */
+        .bg-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.75;
+            animation: floatBlob 12s infinite alternate ease-in-out;
+        }
+
+        /* Logo Color Mapping: Vibrant Purple, Electric Blue, and Cyan */
+        .blob-1 {
+            width: 550px;
+            height: 550px;
+            background: rgba(168, 85, 247, 0.55);
+            top: -120px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            width: 600px;
+            height: 600px;
+            background: rgba(59, 130, 246, 0.5);
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -4s;
+        }
+
+        .blob-3 {
+            width: 480px;
+            height: 480px;
+            background: rgba(14, 165, 233, 0.55);
+            top: 35%;
+            left: 25%;
+            animation-delay: -8s;
+        }
+
+        .blob-4 {
+            width: 400px;
+            height: 400px;
+            background: rgba(99, 102, 241, 0.45);
+            top: 10%;
+            right: 15%;
+            animation-delay: -6s;
+        }
+
+        body.inspector-body.light-theme .blob-1 { background: rgba(168, 85, 247, 0.35); }
+        body.inspector-body.light-theme .blob-2 { background: rgba(59, 130, 246, 0.32); }
+        body.inspector-body.light-theme .blob-3 { background: rgba(14, 165, 233, 0.35); }
+        body.inspector-body.light-theme .blob-4 { background: rgba(99, 102, 241, 0.28); }
+
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(90px, 80px) scale(1.25); }
+        }
+
+        .inspector-container {
+            max-width: 920px;
+            width: 100%;
+            margin: 140px auto 70px;
+            padding: 0 20px;
+            z-index: 1;
+        }
+
+        .inspector-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .inspector-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .inspector-header p {
+            color: #9ca3af;
+            font-size: 1.12rem;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Enhanced Ultra-Glassy Cards with Zoom Animation on Hover */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, background 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: scale(1.03);
+            border-color: rgba(59, 130, 246, 0.35);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            z-index: 10;
+        }
+
+        /* Link Input Card */
+        .input-card {
+            padding: 38px;
+            margin-bottom: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-input-group {
+            display: flex;
+            gap: 15px;
+            position: relative;
+        }
+
+        @media(max-width: 768px) {
+            .link-input-group { flex-direction: column; }
+            .inspector-header h1 { font-size: 2.3rem; }
+        }
+
+        .input-glass-wrapper {
+            position: relative;
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px 0 50px;
+            transition: all 0.3s ease;
+        }
+
+        .input-glass-wrapper:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            background: rgba(0, 0, 0, 0.45);
+        }
+
+        body.inspector-body.light-theme .input-glass-wrapper:focus-within {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .input-glass-wrapper i {
+            position: absolute;
+            left: 22px;
+            color: #3b82f6;
+            font-size: 18px;
+        }
+
+        .input-glass-wrapper input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 18px 0;
+            color: #ffffff;
+            font-size: 15px;
+            font-family: 'Outfit', sans-serif;
+            outline: none;
+        }
+
+        .input-glass-wrapper input::placeholder {
+            color: #6b7280;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 16px 38px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+        /* Results Dashboard */
+        .results-dashboard {
+            display: none;
+            animation: fadeInDashboard 0.5s ease-in-out forwards;
+        }
+
+        .results-dashboard.active {
+            display: block;
+        }
+
+        @keyframes fadeInDashboard {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media(max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .dash-card {
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-card h3 {
+            font-size: 1.05rem;
+            color: #9ca3af;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+        }
+
+        .dash-card h3 i {
+            color: #3b82f6;
+            font-size: 1.2rem;
+        }
+
+        /* Status Badge */
+        .status-badge-live {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #34d399;
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px #34d399; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* Stat Metrics */
+        .metric-value {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-sub {
+            font-size: 13.5px;
+            color: #9ca3af;
+        }
+
+        /* Data Usage Progress */
+        .progress-bar-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            height: 12px;
+            overflow: hidden;
+            margin: 18px 0 10px;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        body.inspector-body.light-theme .progress-bar-container {
+            background: rgba(0, 0, 0, 0.06);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .progress-bar-fill-dynamic {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+            border-radius: 12px;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
+
+        .usage-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        /* Details list */
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 14.5px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row span:first-child {
+            color: #9ca3af;
+        }
+
+        .detail-row span:last-child {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        @media(max-width: 600px) {
+            .dashboard-actions { flex-direction: column; }
+        }
+
+        /* Live Server Stats Grid inside Connection Card */
+        .server-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 18px;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .stat-item span:first-child {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-item span:last-child {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        /* Action Buttons Custom Styling */
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.55);
+        }
+
+        .btn-secondary-custom {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary-custom:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Redesigned Attractive Countdown Timer */
+        .countdown-box {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .countdown-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 16px;
+            letter-spacing: 1.2px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .countdown-title i {
+            color: #38bdf8;
+        }
+
+        .countdown-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .count-item {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 4px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .count-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #38bdf8;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+            display: inline-block;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
+        }
+
+        @keyframes numberSwitch {
+            0% { transform: translateY(-10px); opacity: 0; filter: blur(4px); }
+            100% { transform: translateY(0); opacity: 1; filter: blur(0); }
+        }
+
+        .count-value.switching {
+            animation: numberSwitch 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .count-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-top: 6px;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .count-separator {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 18px;
+            animation: pulseSeparator 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseSeparator {
+            0%, 100% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 10px #3b82f6; }
+        }
+
+        @media(max-width: 480px) {
+            .countdown-grid { gap: 10px; }
+            .count-value { font-size: 1.6rem; }
+            .count-separator { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body class="inspector-body">
+    <!-- Inline Theme Check for immediate load without flashing -->
+    <script>
+        if (localStorage.getItem('skymode_theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
+    </script>
+
+    <!-- Background Animated Glow Orbs -->
+    <div class="bg-animation-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastNotification" class="toast-notification"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="vpn_logotrans.png" alt="Skymode Logo" onerror="this.style.display='none'">
+                <span>Skymode</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#pricing">Pricing</a></li>
+                <li><a href="details.html" class="active">Details</a></li>
+                <li><a href="contact.html">Contact & Support</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <a href="index.html#pricing" class="btn-glow hide-mobile">Get Skymode</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="inspector-container">
+        <div class="inspector-header">
+            <div class="badge"><i class="fa-solid fa-bolt" style="color: #3b82f6;"></i> Real-Time Live Diagnostics</div>
+            <h1>Package & Subscription <span class="text-gradient">Inspector</span></h1>
+            <p>Paste your config link below. All connection statistics, server speeds, CPU/RAM metrics, and expiration countdowns update live automatically.</p>
+        </div>
+
+        <!-- Input Card -->
+        <div class="glass-card input-card">
+            <div class="link-input-group">
+                <div class="input-glass-wrapper">
+                    <i class="fa-solid fa-link"></i>
+                    <input type="text" id="configLinkInput" placeholder="Paste vmess://, vless:// or subscription link here..." autocomplete="off">
+                </div>
+                <button id="checkLinkBtn" class="check-btn">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i> Check Details
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Dashboard -->
+        <div id="resultsDashboard" class="results-dashboard">
+            <div class="dashboard-grid">
+                
+                <!-- 1. Connection Status Box -->
+                <div class="glass-card dash-card">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Live Connection Status</h3>
+                    <div style="margin: 12px 0;">
+                        <div class="status-badge-live">
+                            <span class="status-dot"></span> Active Secure Tunnel
+                        </div>
+                    </div>
+                    <div class="detail-row" style="margin-top: 10px;">
+                        <span>Connected Server:</span>
+                        <strong id="resServerName" class="text-gradient">Singapore (SG)</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Package Plan:</span>
+                        <strong id="resPlanName">Standard V2Ray Pro</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Protocol:</span>
+                        <strong id="resProtocol">VLESS / TCP</strong>
+                    </div>
+
+                    <!-- Live Server Metrics Box -->
+                    <div class="server-stats-grid">
+                        <div class="stat-item">
+                            <span>Down Speed</span>
+                            <span id="resDownSpeed">0.00 MB/s</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Up Speed</span>
+                            <span id="resUpSpeed">0.00 MB/s</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Server CPU</span>
+                            <span id="resCpuUsage">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Server RAM</span>
+                            <span id="resMemUsage">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Bandwidth & Usage Card -->
+                <div class="glass-card dash-card">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Bandwidth & Usage</h3>
+                    <div class="metric-value" id="resUsedData">0 GB</div>
+                    <div class="metric-sub">Out of <span id="resTotalData">0 GB</span> High-Speed Data</div>
+                    
+                    <div class="progress-bar-container">
+                        <div id="usageProgressFill" class="progress-bar-fill-dynamic"></div>
+                    </div>
+                    <div class="usage-labels">
+                        <span>Used: <strong id="resUsedPercent">0%</strong></span>
+                        <span>Remaining: <strong id="resRemainingData">0 GB</strong></span>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <div class="detail-row">
+                            <span>Total Downloaded:</span>
+                            <strong id="resDownloadedData" style="color: #38bdf8;">0 MB</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>Total Uploaded:</span>
+                            <strong id="resUploadedData" style="color: #34d399;">0 MB</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Expiry, Progress Bar & Live Countdown Container -->
+            <div class="glass-card dash-card" style="margin-bottom: 25px;">
+                <h3><i class="fa-solid fa-hourglass-half"></i> Subscription Validity & Countdown Timer</h3>
+                
+                <div style="margin: 15px 0 20px 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;">
+                        <span>Activation: <strong id="resActivationDate" style="color: inherit;">--</strong></span>
+                        <span>Expiration: <strong id="resExpiryDate" style="color: #34d399;">--</strong></span>
+                    </div>
+                    <!-- Progress bar between activation and expiry -->
+                    <div class="progress-bar-container" style="height: 10px;">
+                        <div id="validityProgressFill" class="progress-bar-fill-dynamic" style="background: linear-gradient(90deg, #10b981, #3b82f6);"></div>
+                    </div>
+                    <div style="text-align: right; font-size: 12px; color: #9ca3af; margin-top: 4px;" id="validityPercentText">Elapsed: 0%</div>
+                </div>
+
+                <!-- Redesigned Attractive Countdown Box -->
+                <div class="countdown-box">
+                    <div class="countdown-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Time Remaining Until Package Expiry
+                    </div>
+                    <div class="countdown-grid" id="resCountdownContainer">
+                        <div class="count-item">
+                            <div class="count-value" id="cdDays">00</div>
+                            <div class="count-label">Days</div>
+                        </div>
+                        <div class="count-separator">:</div>
+                        <div class="count-item">
+                            <div class="count-value" id="cdHours">00</div>
+                            <div class="count-label">Hours</div>
+                        </div>
+                        <div class="count-separator">:</div>
+                        <div class="count-item">
+                            <div class="count-value" id="cdMinutes">00</div>
+                            <div class="count-label">Mins</div>
+                        </div>
+                        <div class="count-separator">:</div>
+                        <div class="count-item">
+                            <div class="count-value" id="cdSeconds">00</div>
+                            <div class="count-label">Secs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="dashboard-actions">
+                <button class="btn-primary-custom" id="copyConfigBtn" style="flex: 1;">
+                    <i class="fa-regular fa-copy"></i> Copy Config Link
+                </button>
+                <a href="index.html#pricing" class="btn-secondary-custom" style="flex: 1; text-align: center;">
+                    <i class="fa-solid fa-arrow-up-right-dots"></i> Renew / Upgrade Plan
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="text-align: center; padding: 30px 0; color: #9ca3af; font-size: 14px;">
+                <p>&copy; 2026 Skymode VPN. Built for ultimate privacy & speed.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkBtn = document.getElementById('checkLinkBtn');
+            const linkInput = document.getElementById('configLinkInput');
+            const dashboard = document.getElementById('resultsDashboard');
+
+            const resServerName = document.getElementById('resServerName');
+            const resPlanName = document.getElementById('resPlanName');
+            const resProtocol = document.getElementById('resProtocol');
+            const resUsedData = document.getElementById('resUsedData');
+            const resTotalData = document.getElementById('resTotalData');
+            const usageProgressFill = document.getElementById('usageProgressFill');
+            const resUsedPercent = document.getElementById('resUsedPercent');
+            const resRemainingData = document.getElementById('resRemainingData');
+            const resDownloadedData = document.getElementById('resDownloadedData');
+            const resUploadedData = document.getElementById('resUploadedData');
+            
+            const resActivationDate = document.getElementById('resActivationDate');
+            const resExpiryDate = document.getElementById('resExpiryDate');
+            const validityProgressFill = document.getElementById('validityProgressFill');
+            const validityPercentText = document.getElementById('validityPercentText');
+            
+            const cdDays = document.getElementById('cdDays');
+            const cdHours = document.getElementById('cdHours');
+            const cdMinutes = document.getElementById('cdMinutes');
+            const cdSeconds = document.getElementById('cdSeconds');
+            const resCountdownContainer = document.getElementById('resCountdownContainer');
+
+            const resDownSpeed = document.getElementById('resDownSpeed');
+            const resUpSpeed = document.getElementById('resUpSpeed');
+            const resCpuUsage = document.getElementById('resCpuUsage');
+            const resMemUsage = document.getElementById('resMemUsage');
+
+            const copyConfigBtn = document.getElementById('copyConfigBtn');
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Handle theme initialization & toggle sync
+            if (localStorage.getItem('skymode_theme') === 'light') {
+                document.body.classList.add('light-theme');
+            }
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('light-theme');
+                    localStorage.setItem('skymode_theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+                });
+            }
+
+            let activeInterval = null;
+            let speedInterval = null;
+            let countdownInterval = null;
+            let currentExpiryTimestamp = 0;
+            let currentActivationTimestamp = 0;
+
+            function showToast(message) {
+                const toast = document.getElementById('toastNotification');
+                if (!toast) return;
+                toast.innerText = message;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+
+            function updateCountValue(element, newValue) {
+                if (!element) return;
+                if (element.innerText !== newValue) {
+                    element.innerText = newValue;
+                    element.classList.remove('switching');
+                    void element.offsetWidth; 
+                    element.classList.add('switching');
+                }
+            }
+
+            async function fetchSubscriptionData(isAutoRefresh = false) {
+                const linkVal = linkInput.value.trim();
+                if (!linkVal) return;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/check-subscription', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ subscriptionLink: linkVal })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        resServerName.innerText = data.serverName;
+                        resPlanName.innerText = data.planName;
+                        resProtocol.innerText = data.protocol;
+                        resUsedData.innerText = `${data.usedGb} GB`;
+                        resTotalData.innerText = data.totalGb === 'Unlimited' ? 'Unlimited' : `${data.totalGb} GB`;
+
+                        usageProgressFill.style.width = `${data.percent}%`;
+                        resUsedPercent.innerText = `${data.percent}%`;
+                        resRemainingData.innerText = data.remainingGb === 'Unlimited' ? 'Unlimited' : `${data.remainingGb} GB`;
+
+                        resDownloadedData.innerText = data.downloadedFormatted;
+                        resUploadedData.innerText = data.uploadedFormatted;
+
+                        resActivationDate.innerText = data.activationDate;
+                        resExpiryDate.innerText = data.expiryDate;
+
+                        resDownSpeed.innerText = data.downloadSpeed;
+                        resUpSpeed.innerText = data.uploadSpeed;
+                        resCpuUsage.innerText = `${data.cpuUsage}%`;
+                        resMemUsage.innerText = `${data.memUsage}%`;
+
+                        if (data.expiryTimestamp > 0) {
+                            currentExpiryTimestamp = data.expiryTimestamp;
+                            currentActivationTimestamp = new Date(data.activationDate).getTime();
+                            
+                            const totalDuration = currentExpiryTimestamp - currentActivationTimestamp;
+                            const elapsed = Date.now() - currentActivationTimestamp;
+                            let valPercent = totalDuration > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / totalDuration) * 100))) : 100;
+                            
+                            validityProgressFill.style.width = `${valPercent}%`;
+                            validityPercentText.innerText = `Elapsed Time: ${valPercent}%`;
+                        } else {
+                            validityProgressFill.style.width = `100%`;
+                            validityPercentText.innerText = `Never Expires (Unlimited)`;
+                        }
+
+                        if (!isAutoRefresh) {
+                            dashboard.classList.add('active');
+                            showToast('Live subscription data loaded successfully!');
+                        }
+                    } else if (!isAutoRefresh) {
+                        showToast(data.message || 'Client not found.');
+                    }
+                } catch (error) {
+                    if (!isAutoRefresh) {
+                        showToast('Could not connect to backend server!');
+                    }
+                }
+            }
+
+            async function fetchServerLiveStats() {
+                const linkVal = linkInput.value.trim();
+                if (!linkVal || !dashboard.classList.contains('active')) return;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/check-subscription', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ subscriptionLink: linkVal })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        resDownSpeed.innerText = data.downloadSpeed;
+                        resUpSpeed.innerText = data.uploadSpeed;
+                        resCpuUsage.innerText = `${data.cpuUsage}%`;
+                        resMemUsage.innerText = `${data.memUsage}%`;
+                    }
+                } catch (e) {}
+            }
+
+            function updateCountdown() {
+                if (currentExpiryTimestamp <= 0) {
+                    resCountdownContainer.innerHTML = '<div style="color: #34d399; font-weight: 700; font-size: 1.1rem; padding: 10px; width: 100%; text-align: center;"><i class="fa-solid fa-infinity"></i> Unlimited Access / Never Expires</div>';
+                    return;
+                }
+
+                const now = Date.now();
+                const diff = currentExpiryTimestamp - now;
+
+                if (diff <= 0) {
+                    resCountdownContainer.innerHTML = '<div style="color: #ef4444; font-weight: 700; font-size: 1.1rem; padding: 10px; width: 100%; text-align: center;"><i class="fa-solid fa-triangle-exclamation"></i> PACKAGE EXPIRED</div>';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                updateCountValue(cdDays, String(days).padStart(2, '0'));
+                updateCountValue(cdHours, String(hours).padStart(2, '0'));
+                updateCountValue(cdMinutes, String(minutes).padStart(2, '0'));
+                updateCountValue(cdSeconds, String(seconds).padStart(2, '0'));
+            }
+
+            checkBtn.addEventListener('click', () => {
+                const linkVal = linkInput.value.trim();
+                if (!linkVal) {
+                    showToast('Please enter a valid configuration link!');
+                    return;
+                }
+
+                if (activeInterval) clearInterval(activeInterval);
+                if (speedInterval) clearInterval(speedInterval);
+                if (countdownInterval) clearInterval(countdownInterval);
+
+                fetchSubscriptionData(false);
+
+                activeInterval = setInterval(() => {
+                    fetchSubscriptionData(true);
+                }, 5000);
+
+                speedInterval = setInterval(() => {
+                    fetchServerLiveStats();
+                }, 2000);
+
+                countdownInterval = setInterval(() => {
+                    updateCountdown();
+                }, 1000);
+            });
+
+            copyConfigBtn.addEventListener('click', () => {
+                const textToCopy = linkInput.value.trim();
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast('Config link copied to clipboard!');
+                });
+            });
+        });
+    </script>
+    <!-- External Base JS -->
+    <script src="script.js"></script>
+</body>
+</html>

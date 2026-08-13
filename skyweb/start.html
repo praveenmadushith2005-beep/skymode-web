@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Verification - Protected Access</title>
+    <!-- Official Google reCAPTCHA Script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #ebf2fc;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: #1e293b;
+        }
+
+        /* Enhanced Background Animated Colorful Blur Blobs */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            transition: filter 0.5s ease;
+        }
+        body.loading-active .bg-animation {
+            filter: blur(10px);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(65px);
+            opacity: 0.85;
+            border-radius: 50%;
+            animation: moveBlobs 10s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            width: 700px;
+            height: 700px;
+            background: #8b5cf6; /* Vibrant Purple */
+            top: -200px;
+            left: -200px;
+            animation-duration: 11s;
+        }
+        .blob-2 {
+            width: 750px;
+            height: 750px;
+            background: #2563eb; /* Deep Blue */
+            bottom: -200px;
+            right: -200px;
+            animation-duration: 13s;
+            animation-direction: alternate-reverse;
+        }
+        .blob-3 {
+            width: 600px;
+            height: 600px;
+            background: #06b6d4; /* Bright Cyan */
+            top: 20%;
+            left: 20%;
+            animation-duration: 9s;
+        }
+        @keyframes moveBlobs {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(180px, 120px) scale(1.25) rotate(45deg); }
+            66% { transform: translate(-150px, 160px) scale(0.8) rotate(-30deg); }
+            100% { transform: translate(120px, -140px) scale(1.15) rotate(60deg); }
+        }
+
+        /* Ultra-Glassy Container Box */
+        .container {
+            background: rgba(255, 255, 255, 0.60);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            padding: 45px 35px;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+            text-align: center;
+            max-width: 460px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+            transition: transform 0.4s ease, opacity 0.4s ease, filter 0.4s ease;
+        }
+        body.loading-active .container {
+            transform: scale(0.95);
+            opacity: 0.5;
+            filter: blur(6px);
+            pointer-events: none;
+        }
+
+        .logo-container {
+            margin-bottom: 12px;
+        }
+        .logo {
+            width: 125px;
+            height: 125px;
+            object-fit: contain;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 12px 20px rgba(79, 172, 254, 0.4));
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .site-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #2563eb, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h1 {
+            font-size: 19px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+        }
+        p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* reCAPTCHA Wrapper Styling */
+        .recaptcha-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        /* Center Window Blurred Loading Modal Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #loading-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .loading-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            padding: 40px 50px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(37, 99, 235, 0.25), inset 0 1px 0 rgba(255, 255, 255, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.85);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #loading-overlay.active .loading-card {
+            transform: scale(1);
+        }
+
+        /* --- Creative Layered Logo Loading Animation --- */
+        .loading-logo-anim {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-logo-anim svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Layer 1: Background Gradient Box Pulse & Rotate */
+        .anim-bg {
+            transform-origin: center;
+            animation: bgPulseRotate 2.5s ease-in-out infinite;
+        }
+        @keyframes bgPulseRotate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(180deg); }
+        }
+
+        /* Layer 2: Translucent Overlapping Petals Spinning & Expanding */
+        .anim-petals {
+            transform-origin: center;
+            animation: spinPetals 3s linear infinite;
+        }
+        @keyframes spinPetals {
+            0% { transform: rotate(0deg) scale(0.95); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(0.95); }
+        }
+
+        /* Layer 3: Central Shield Pulsing and Glowing */
+        .anim-shield {
+            transform-origin: center;
+            animation: shieldPulseGlow 1.5s ease-in-out infinite;
+        }
+        @keyframes shieldPulseGlow {
+            0%, 100% { 
+                transform: scale(1); 
+                filter: drop-shadow(0 0 4px rgba(255,255,255,0.8)); 
+            }
+            50% { 
+                transform: scale(1.15); 
+                filter: drop-shadow(0 0 14px rgba(255,255,255,1)); 
+            }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            color: #2563eb;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Animated Colorful Blur Blobs -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="logo-container">
+            <!-- Website Logo -->
+            <img src="vpn_logotrans.png" alt="Website Logo" class="logo">
+        </div>
+        <div class="site-name">Skymode VPN service</div>
+        <h1>Security Verification</h1>
+        <p>Please complete the security check below to verify that you are human and safely proceed to the platform.</p>
+        
+        <div class="recaptcha-wrapper">
+            <!-- Updated Official Google reCAPTCHA v2 Checkbox with your new site key -->
+            <div class="g-recaptcha" data-sitekey="6LdMeXUtAAAAANWe99JN3Z8R772EJ4Prmq5U8gNa" data-callback="handleVerify"></div>
+        </div>
+    </div>
+
+    <!-- Centered Blurred Loading Modal Overlay with Layered Logo Animation -->
+    <div id="loading-overlay">
+        <div class="loading-card">
+            <div class="loading-logo-anim">
+                <svg viewBox="0 0 512 512">
+                    <defs>
+                        <linearGradient id="loadingLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#8b5cf6" />
+                            <stop offset="100%" stop-color="#2563eb" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Layer 1: Background Rounded Box -->
+                    <rect class="anim-bg" x="32" y="32" width="448" height="448" rx="112" fill="url(#loadingLogoGrad)" />
+                    
+                    <!-- Layer 2: Translucent Ring / Petal Layers -->
+                    <g class="anim-petals">
+                        <circle cx="256" cy="220" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="210" cy="256" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="302" cy="256" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="256" cy="292" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="225" cy="225" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="287" cy="225" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="225" cy="287" r="95" fill="rgba(255,255,255,0.2)" />
+                        <circle cx="287" cy="287" r="95" fill="rgba(255,255,255,0.2)" />
+                    </g>
+                    
+                    <!-- Layer 3: Central Shield Icon -->
+                    <path class="anim-shield" d="M256 160C256 160 336 176 352 216C352 288 304 336 256 368C208 336 160 288 160 216C176 176 256 160 256 160Z" fill="white" />
+                </svg>
+            </div>
+            <div class="loading-text">Verifying Security Layers...</div>
+        </div>
+    </div>
+
+    <script>
+        // Automatically called by Google reCAPTCHA when the verification checkbox passes successfully
+        function handleVerify(response) {
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            // Trigger full window blur and center loading overlay
+            document.body.classList.add('loading-active');
+            loadingOverlay.classList.add('active');
+            
+            // Redirect to index.html after 1.8 seconds
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
