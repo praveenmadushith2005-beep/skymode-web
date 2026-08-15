@@ -3,12 +3,26 @@ const cors = require('cors');
 const axios = require('axios');
 const https = require('https');
 const os = require('os');
+const path = require('path'); 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// X-UI පැනල් විස්තර 
+
+app.use(express.static(__dirname, { index: false }));
+
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'start.html'));
+});
+
+
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+
 const XUI_HOST = 'https://vpn.skymode.xyz:2053';
 const SUB_PATH = '/Gux6MzwBCzjA0isz0G'; 
 const XUI_USERNAME = 'admin';
@@ -19,7 +33,7 @@ const httpsAgent = new https.Agent({
     keepAlive: true
 });
 
-// සැබෑ CPU භාවිතය ගණනය කිරීම
+
 function getCpuUsage() {
     const cpus = os.cpus();
     let idleMs = 0;
@@ -33,7 +47,7 @@ function getCpuUsage() {
     return Math.round(((totalMs - idleMs) / totalMs) * 100);
 }
 
-// සැබෑ Memory භාවිතය ගණනය කිරීම
+
 function getMemoryUsage() {
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
@@ -211,7 +225,6 @@ app.post('/api/check-subscription', async (req, res) => {
             expiryTimestamp = expiryTime;
             expiryDate = new Date(expiryTime).toISOString().slice(0, 10);
             
-            // දෝෂය නිවැරදි කරන ලද ස්ථානය (ටොකන් දෝෂ ඉවත් කර ඇත)
             const actDate = new Date(expiryTime - (30 * 24 * 60 * 60 * 1000));
             activationDate = actDate.toISOString().slice(0, 10);
         }
