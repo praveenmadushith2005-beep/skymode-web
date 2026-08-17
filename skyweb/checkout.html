@@ -224,12 +224,6 @@
 
         .checkout-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 35px; }
 
-        @media(max-width: 768px) {
-            .checkout-grid { grid-template-columns: 1fr; }
-            .countdown-banner { padding: 16px 20px; flex-direction: column; gap: 15px; text-align: center; }
-            .countdown-info { flex-direction: column; }
-        }
-
         .checkout-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
             backdrop-filter: blur(35px);
@@ -369,6 +363,33 @@
 
         /* Printable Invoice Template Styling */
         #invoiceTemplate { display: none; background: #ffffff; color: #1e293b; padding: 50px; font-family: 'Outfit', sans-serif; width: 720px; box-sizing: border-box; }
+
+        /* ==================================================== */
+        /* --- MOBILE RESPONSIVENESS FIXES (NO DESKTOP CHANGES) --- */
+        /* ==================================================== */
+        @media(max-width: 768px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+            .countdown-banner { padding: 16px 20px; flex-direction: column; gap: 15px; text-align: center; }
+            .countdown-info { flex-direction: column; }
+            
+            /* Prevent Header Elements from Overflowing */
+            .checkout-header { flex-direction: column; gap: 15px; text-align: center; margin-bottom: 25px; }
+            
+            /* Reduce Heavy Desktop Paddings that squash content on Mobile */
+            .checkout-card { padding: 25px 20px; }
+            
+            /* Fix Text Wrapping and Overlapping in Bank Field on Mobile */
+            .bank-field { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .bank-field button { align-self: flex-start; width: 100%; justify-content: center; }
+            
+            /* Adjust Total Price font to prevent line breaks */
+            .total-price { font-size: 1.8rem; }
+            
+            /* Fix Glass Modal Overflow on Small Devices */
+            .glass-modal { padding: 30px 20px; max-width: 95%; width: 100%; }
+            .modal-steps-box div { font-size: 13px; }
+            .checkout-container { margin: 20px auto; }
+        }
     </style>
 </head>
 <body class="checkout-body">
