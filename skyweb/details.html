@@ -622,6 +622,26 @@
             .count-value { font-size: 1.6rem; }
             .count-separator { font-size: 1.4rem; }
         }
+
+        /* ==================================================== */
+        /* --- MOBILE RESPONSIVENESS FIXES (NO DESKTOP CHANGES) --- */
+        /* ==================================================== */
+        @media(max-width: 768px) {
+            .inspector-container { margin: 100px auto 40px; padding: 0 15px; }
+            
+            /* Reduce Heavy Desktop Paddings on Cards */
+            .dash-card, .input-card, .countdown-box { padding: 20px 15px; }
+            
+            /* Prevent Metrics from Overlapping/Breaking Line */
+            .metric-value { font-size: 1.8rem; }
+            .server-stats-grid { grid-template-columns: 1fr; }
+            
+            /* Adjust input fields and rows for narrow displays */
+            .input-glass-wrapper { padding: 0 15px 0 40px; }
+            .input-glass-wrapper i { left: 15px; }
+            .detail-row { flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 0; }
+            .btn-primary-custom, .btn-secondary-custom { font-size: 13.5px; padding: 14px 20px; }
+        }
     </style>
 </head>
 <body class="inspector-body">
@@ -923,8 +943,8 @@
                         resUsedPercent.innerText = `${data.percent}%`;
                         resRemainingData.innerText = data.remainingGb === 'Unlimited' ? 'Unlimited' : `${data.remainingGb} GB`;
 
-                        resDownloadedData.innerText = data.downloadedFormatted;
-                        resUploadedData.innerText = data.uploadedFormatted;
+                        resDownloadedData.innerText = data.downloadFormatted;
+                        resUploadedData.innerText = data.uploadFormatted;
 
                         resActivationDate.innerText = data.activationDate;
                         resExpiryDate.innerText = data.expiryDate;
